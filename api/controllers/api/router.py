@@ -3,7 +3,7 @@ from fastapi import APIRouter, Request
 api_router = APIRouter(prefix="/api/v1", tags=["api"])
 
 
-@api_router.get("")
+@api_router.get("/")
 async def api_index(request: Request) -> dict:
     return {"message": "Xim API v1", "headers": dict(request.headers)}
 

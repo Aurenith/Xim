@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, APIRouter
+from fastapi import FastAPI, Request
 import uvicorn
 
 from controllers.api import user, auth
@@ -6,10 +6,9 @@ from controllers.api.router import api_router
 
 app = FastAPI(title="Xim API")
 
-api_router = APIRouter(prefix="/api/v1", tags=["api"])
-app.include_router(api_router)
 api_router.include_router(user.user_router)
 api_router.include_router(auth.router)
+app.include_router(api_router)
 
 
 
