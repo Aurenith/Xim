@@ -11,7 +11,6 @@ async def api_index(request: Request) -> dict:
 @api_router.get("/health/")
 async def health_check() -> dict:
     return {"status": "ok"}
-
 @api_router.get("/auth")
 async def auth_check() -> dict:
     return {"status": "authenticated"}
