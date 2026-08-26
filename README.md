@@ -31,6 +31,17 @@ The intended offline workflow is:
 
 ## Local development
 
+Make sure to install nvm in your system for prisma client <install: "https://github.com/nvm-windows/nvm/releases">
+
+** Prisma Setup **
+```
+-> nvm install 22
+-> nvm use 22
+-> cd api/
+-> uv run prisma generate
+```
+import prisma for lib/ and write queries.
+
 ```
  -> cd api/
  -> uv venv .venv
@@ -51,6 +62,8 @@ api/
 	controllers/api/          API routers
 	services/                 Application services
 	auth/                     Authentication modules
+	lib/                      utitlites for the project
+	    prisma/                     prisma modules files
 assets/github/              Project images and documentation assets
 compose.yaml                Docker Compose configuration
 Dockerfile                  Container image definition
