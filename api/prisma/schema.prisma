@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-py"
+  recursive_type_depth = 5
+  enable_experimental_decimal = true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  email        String?  @unique
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Camera {
+  id         String     @id @default(uuid())
+  name       String
+  deviceType CameraType
+  location   String?
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  events     Event[]
+}
+
+model Zone {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  isRestricted Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  events       Event[]
+}
+
+model Event {
+  id          String      @id @default(uuid())
+  cameraId    String
+  zoneId      String?
+  detectedAt  DateTime
+  riskScore   Int         @default(0)
+  riskLevel   RiskLevel   @default(LOW)
+  snapshotUrl String?
+  latitude    Decimal?    @db.Decimal(10, 7)
+  longitude   Decimal?    @db.Decimal(10, 7)
+  isSynced    Boolean     @default(false)
+  syncedAt    DateTime?
+  createdAt   DateTime    @default(now())
+  camera      Camera      @relation(fields: [cameraId], references: [id], onDelete: Cascade)
+  zone        Zone?       @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  detections  Detection[]
+
+  @@index([cameraId, detectedAt])
+  @@index([isSynced, detectedAt])
+  @@index([riskLevel, detectedAt])
+}
+
+model Detection {
+  id         String         @id @default(uuid())
+  eventId    String
+  label      DetectionLabel
+  confidence Decimal?       @db.Decimal(5, 4)
+  metadata   Json?
+  createdAt  DateTime       @default(now())
+  event      Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+enum CameraType {
+  CCTV
+  ESP32_CAM
+  WEBCAM
+}
+
+enum DetectionLabel {
+  PERSON
+  VEHICLE
+  UNKNOWN
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
