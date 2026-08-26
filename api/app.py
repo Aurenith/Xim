@@ -15,7 +15,7 @@ api_router.include_router(auth.router)
 
 @app.get("/")
 async def home(request: Request) -> dict:
-    return {"message": "Welcome to Xim", "headers": dict(request.headers)}
+    return {"message": "Welcome to Xim"}
 
 
 if __name__ == "__main__":
