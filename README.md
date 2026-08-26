@@ -4,7 +4,7 @@ XIM is designed to work with existing CCTV cameras, ESP32-CAM devices, or
 webcams and continue recording events when the internet connection is
 unavailable.
 
-![XIM surveillance architecture](./assets/github/xim.jpeg)
+![XIM surveillance architecture](/assets/github/xim.jpeg)
 
 ## Architecture
 
