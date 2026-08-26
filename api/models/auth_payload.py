@@ -20,7 +20,7 @@ class LogInPayload(BaseModel):
     password: str | None = None
     xim_token: str | None = None
 
-class AuthPaylaod(BaseModel): 
+class AuthPayload(BaseModel): 
     id: str 
     user_token: str | None = None
     email: str | None = None
