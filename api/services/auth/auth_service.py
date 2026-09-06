@@ -1,39 +1,28 @@
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request,Response
 from lib.prisma.prisma import get_prisma_client
 from models.auth_payload import LogInPayload, SignUpPayload,AuthPayload
-from utils import hash_password, verify_password
+from utils.hashing.hashing import hash_password, verify_password, create_access_token
 
-
-async def user_authenticated_log(
-    payload: LogInPayload,
-) -> dict[str, str]:
-
-    if not payload.username and not payload.email:
-        raise HTTPException(
-            status_code=400,
-            detail="username or email is required",
-        )
-
-    if not payload.password:
-        raise HTTPException(
-            status_code=400,
-            detail="password is required",
-        )
+async def user_authenticated_log(payload: LogInPayload, response: Response) -> dict[str, str]:
+    ...
+    token = create_access_token(user.id)
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=60 * 60,
+    )
+    return {"message": "login successful", "userId": user.id}
 
     prisma = await get_prisma_client()
 
-    if payload.username:
-        user = await prisma.user.find_unique(
-            where={
-                "username": payload.username,
-            }
-        )
-    else:
-        user = await prisma.user.find_unique(
-            where={
-                "email": payload.email,
-            }
-        )
+    user = await prisma.user.find_unique(
+        where={
+            "OR": [{"email": payload.email}, {"username": payload.username}]
+        }
+    )
 
     if not user:
         raise HTTPException(
@@ -41,12 +30,10 @@ async def user_authenticated_log(
             detail="invalid credentials",
         )
 
-    if not user.passwordHash:
-        raise HTTPException(
-            status_code=401,
-            detail="password authentication unavailable",
-        )
+    password = payload.password
 
+     
+       
     if not verify_password(
         payload.password,
         user.passwordHash,
@@ -63,11 +50,8 @@ async def user_authenticated_log(
 
 
 async def user_authenticated_sign(payload: SignUpPayload) -> dict[str, str]:
-    if not payload.username:
-        raise HTTPException(
-            status_code=400,
-            detail="password is required"
-        )
+    if not payload.username or not payload.password or not payload.email:
+        raise HTTPException(status_code=400, detail="username, email and password are required")
 
     prisma = await get_prisma_client()
 
@@ -93,36 +77,8 @@ async def user_authenticated_sign(payload: SignUpPayload) -> dict[str, str]:
     return {"message": "user signup successful",
             "userID":user.id,
             }
-async def user_authenticated_logout(
-    payload: AuthPayload,
-) -> dict[str, str]:
 
-    if not payload.sessionId:
-        raise HTTPException(
-            status_code=400,
-            detail="sessionId is required",
-        )
 
-    prisma = await get_prisma_client()
-
-    session = await prisma.session.find_unique(
-        where={
-            "sessionId": payload.sessionId,
-        }
-    )
-
-    if not session:
-        raise HTTPException(
-            status_code=401,
-            detail="invalid session",
-        )
-
-    await prisma.session.delete(
-        where={
-            "sessionId": payload.sessionId,
-        }
-    )
-
-    return {
-        "message": "logout successful",
-    }
+async def user_authenticated_logout(response: Response) -> dict[str, str]:
+    response.delete_cookie("access_token")
+    return {"message": "logout successful"}

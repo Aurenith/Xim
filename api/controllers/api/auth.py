@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Request
-from services.auth import user_authenticated_log, user_authenticated_sign
-from models.auth_payload import SignUpPayload,LogInPayload,AuthPayload
+from services.auth.auth_service import (
+    user_authenticated_log,
+    user_authenticated_sign,
+    user_authenticated_logout as logout_services
+)
+from models.auth_payload import SignUpPayload,LogInPayload
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -16,10 +20,6 @@ async def user_auth_signup(payload: SignUpPayload) -> dict[str, str]:
     return await user_authenticated_sign(payload)
 
 @router.post("/logout")
-async def user_auth_logout(payload: AuthPayload) -> dict[str, str]:
-
+async def user_auth_logout() -> dict[str, str]:
     print("reached user_logout")
-
-    return {
-        "message": "Logged out successfully"
-    }
+    return await user_auth_logout(Request)
