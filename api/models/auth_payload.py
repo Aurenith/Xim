@@ -8,21 +8,25 @@ class Role(Enum):
 
 
 class SignUpPayload(BaseModel):
-    sessionId: str
     email: str | None = None
     username: str | None = None
     password: str | None = None
 
 class LogInPayload(BaseModel):
-    sessionId: str
     email: str | None = None
     username: str | None = None
     password: str | None = None
     xim_token: str | None = None
 
-class AuthPaylaod(BaseModel): 
-    id: str 
+class AuthPayload(BaseModel):
+    id: str
     user_token: str | None = None
     email: str | None = None
     role: Role
-    sessionId: str | None = None
+
+
+class TokenPayload(BaseModel):
+    id: str
+    username: str
+    email: str
+    image_url: str 
