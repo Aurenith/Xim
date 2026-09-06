@@ -1,0 +1,28 @@
+# Downloaded and converted datasets
+/ml/dataset/*
+!/ml/dataset/download_dataset.py
+/ml/dataset/VisDrone2019-DET/
+/ml/dataset/Visdrone/
+/ml/dataset/VisDrone2019-DET-train
+
+# Local ML environments and caches
+/ml/env/
+/ml/.venv/
+/ml/**/__pycache__/
+/ml/**/.ipynb_checkpoints/
+
+.vscode/
+
+# Model weights and training artifacts
+/ml/**/*.pt
+/ml/**/*.onnx
+/ml/**/*.engine
+/ml/models/
+/ml/**/runs/
+/ml/**/outputs/
+/ml/**/wandb/
+/ml/**/tensorboard/
+
+# Generated experiment results
+/ml/**/*.csv
+/ml/**/*.log
