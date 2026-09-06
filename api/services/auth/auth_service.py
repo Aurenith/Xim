@@ -5,22 +5,16 @@ from utils.hashing.hashing import hash_password, verify_password, create_access_
 
 async def user_authenticated_log(payload: LogInPayload, response: Response) -> dict[str, str]:
     ...
-    token = create_access_token(user.id)
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=True,
-        samesite="lax",
-        max_age=60 * 60,
-    )
-    return {"message": "login successful", "userId": user.id}
+   
+    # return {"message": "login successful", "userId": payload.user.id}
+    username = payload.username
+    email = payload.email
 
     prisma = await get_prisma_client()
 
     user = await prisma.user.find_unique(
         where={
-            "OR": [{"email": payload.email}, {"username": payload.username}]
+           "email": email
         }
     )
 
@@ -31,8 +25,6 @@ async def user_authenticated_log(payload: LogInPayload, response: Response) -> d
         )
 
     password = payload.password
-
-     
        
     if not verify_password(
         payload.password,
@@ -43,9 +35,27 @@ async def user_authenticated_log(payload: LogInPayload, response: Response) -> d
             detail="invalid credentials",
         )
 
+
+    token = create_access_token({"user_id": str(user.id), "username": str(user.username)})
+
+    if not token: 
+        return {
+                "message": "login unsuccessful",
+            }
+
+    response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            max_age=60 * 60,
+        )
+
     return {
         "message": "login successful",
         "userId": user.id,
+        "token": str(token)
     }
 
 

@@ -21,14 +21,18 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 
 
-
-def create_access_token(user_id: str) -> str:
+# -> user_id { userid, username, email, ......} 
+def create_access_token(payload: dict) -> str:
+    print(payload)
     expire = datetime.now(timezone.utc) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
     payload = {
-        "sub": user_id,
+        "data": {
+            "id": payload["user_id"],
+            "username": payload["username"]
+        },
         "exp": expire,
     }
 
