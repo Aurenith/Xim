@@ -1,13 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-py"
-  recursive_type_depth = 5
-  enable_experimental_decimal = true
+  provider                    = "prisma-client-py"
+  enable_experimental_decimal = "true"
+  recursive_type_depth        = "5"
 }
 
 datasource db {
@@ -58,9 +52,9 @@ model Event {
   isSynced    Boolean     @default(false)
   syncedAt    DateTime?
   createdAt   DateTime    @default(now())
-  camera      Camera      @relation(fields: [cameraId], references: [id], onDelete: Cascade)
-  zone        Zone?       @relation(fields: [zoneId], references: [id], onDelete: SetNull)
   detections  Detection[]
+  camera      Camera      @relation(fields: [cameraId], references: [id], onDelete: Cascade)
+  zone        Zone?       @relation(fields: [zoneId], references: [id])
 
   @@index([cameraId, detectedAt])
   @@index([isSynced, detectedAt])

@@ -1,0 +1,64 @@
+from datetime import datetime, timedelta, timezone
+
+import jwt
+from pwdlib import PasswordHash
+
+
+SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+
+password_hash = PasswordHash.recommended()
+
+
+def hash_password(password: str) -> str:
+    return password_hash.hash(password)
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    return password_hash.verify(password, hashed_password)
+
+
+
+# -> user_id { userid, username, email, ......} 
+def create_access_token(payload: dict) -> str:
+    print(payload)
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
+    payload = {
+        "data": {
+            "id": payload["user_id"],
+            "username": payload["username"]
+        },
+        "exp": expire,
+    }
+
+    return jwt.encode(
+        payload,
+        SECRET_KEY,
+        algorithm=ALGORITHM,
+    )
+
+
+def decode_access_token(token: str) -> str | None:
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+        )
+
+        user_id = payload.get("sub")
+
+        if not user_id:
+            return None
+
+        return str(user_id)
+
+    except jwt.PyJWTError:
+        return None
+
+    
