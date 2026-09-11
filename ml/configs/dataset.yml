@@ -1,4 +1,4 @@
-path: ../dataset/final/weapon_detection
+path: ../dataset/combined
 
 train: train/images
 val: val/images

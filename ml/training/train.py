@@ -47,10 +47,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_PATH = (
     BASE_DIR
     / "models"
-    / "trained"
-    / "visdrone-5"
-    / "weights"
-    / "best.pt"
+    / "pretrained"
+    / "yolov8n.pt"
 )
 
 DATASET_PATH = (
@@ -79,13 +77,14 @@ def train():
     data=str(DATASET_PATH),
 
     epochs=10,        # ↓ biggest direct reduction
-    imgsz=640,       # ↓ significantly faster than 640
-    batch=16,         # ↓ memory usage; may or may not improve speed
+    imgsz=416,       # ↓ significantly faster than 640
+    batch=32,         # ↓ memory usage; may or may not improve speed
     device="cpu",
     workers=4,       # 2–4 is usually reasonable
 
+    cache="ram",  # ↓ faster than disk; may or may not improve speed
     project=str(OUTPUT_DIR),
-    name="visdrone",
+    name="weapon_detection",
     pretrained=True,
     plots=True,
     verbose=True,
