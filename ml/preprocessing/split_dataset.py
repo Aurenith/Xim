@@ -25,7 +25,7 @@ def split_dataset():
     random.seed(RANDOM_SEED)
 
     images = list(
-        IMAGE_DIR.glob("*.jpg")
+        IMAGE_DIR.glob("*.jpeg")
     )
 
     random.shuffle(images)

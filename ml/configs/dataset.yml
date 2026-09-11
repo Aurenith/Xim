@@ -1,4 +1,4 @@
-path: ../dataset/final
+path: ../dataset/final/weapon_detection
 
 train: train/images
 val: val/images
@@ -15,3 +15,4 @@ names:
   7: awning-tricycle
   8: bus
   9: motor
+  10: weapon

@@ -38,10 +38,18 @@ def main() -> None:
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# MODEL_PATH = (
+#     BASE_DIR
+#     / "models"
+#     / "pretrained"
+#     / "best.pt"
+# )
 MODEL_PATH = (
     BASE_DIR
     / "models"
-    / "pretrained"
+    / "trained"
+    / "visdrone-5"
+    / "weights"
     / "best.pt"
 )
 
@@ -78,8 +86,6 @@ def train():
 
     project=str(OUTPUT_DIR),
     name="visdrone",
-
-    patience=2,
     pretrained=True,
     plots=True,
     verbose=True,
